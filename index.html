@@ -5,12 +5,51 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite + Lit + TS</title>
-    <link rel="stylesheet" href="./src/index.css" />
-    <script type="module" src="/src/my-element.ts"></script>
+    <script type="module" src="/src/ds-sorter.ts"></script>
   </head>
   <body>
-    <my-element>
-      <h1>Vite + Lit</h1>
-    </my-element>
+    <ds-sorter random onclick="this.sort()">
+      <p>1</p>
+      <p>2</p>
+      <p>3</p>
+      <p>4</p>
+      <p>5</p>
+    </ds-sorter>
+
+    <ds-sorter by=".style.color" descending>
+      <p class="d" style="color: red;">D</p>
+      <p class="c" style="color: blue;">C</p>
+      <p class="a" style="color: black;">A</p>
+      <p class="e" style="color: purple;">E</p>
+      <p class="b" style="color: cyan;">B</p>
+    </ds-sorter>
+    
+    <ul>
+      <ds-sorter by="{:scope > a}, {a} href">
+        <li><a href="#lessawesome">Hey!</a></li>
+        <li><a href="#awesome">Hey!</a></li>
+        <li><a href="#sick">Cool</a></li>
+        <li><a href="#cool">Aaah!</a></li>
+        <li><a href="#great">Neato</a></li>
+      </ds-sorter>
+    </ul>
+
+    <ul style="list-style: none; padding-inline-start: 0;">
+      <ds-sorter by="{input}.checked, .innerText" onchange="this.sort()">
+        <li><label><input type="checkbox"/>Corn</label></li>
+        <li><label><input type="checkbox"/>Milk</label></li>
+        <li><label><input type="checkbox" checked/>Cheese</label></li>
+        <li><label><input type="checkbox"/>Bread</label></li>
+        <li><label><input type="checkbox" checked/>Nutmeg</label></li>
+        <li><label><input type="checkbox"/>Apples</label></li>
+      </ds-sorter>
+    </ul>
+
+    <ds-sorter by="class">
+      <p class='a' name="3">B class a name 3</p>
+      <p class='c' name="4">A class c name 4</p>
+      <p class='b' name='2'>D class b name 2</p>
+      <p class='d' name='1'>C class d name 1</p>
+    </ds-sorter>
   </body>
 </html>
