@@ -12,7 +12,15 @@
     "lit": "^3.2.0"
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "typescript": "^5.5.3",
     "vite": "^5.4.1"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": true
   }
 }
