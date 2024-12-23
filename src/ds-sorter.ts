@@ -12,8 +12,8 @@ export interface Rule {
   key: string | string[]
   /** Selector for descendant to get attribute/property off of */
   selector?: string
-  /** If true, sort in reverse order relative to the global sort direction */
-  reverse?: boolean
+  /** If true, sort descending by default */
+  descending?: boolean
 }
 
 const parseToRules = (value: string | null): Rule[] => {
@@ -27,14 +27,14 @@ const parseToRules = (value: string | null): Rule[] => {
       .reverse()
     let key: string | string[] = rawKey
 
-    const reverse = key[0] === '>'
-    if (reverse) key = key.slice(1)
+    const descending = key[0] === '>'
+    if (descending) key = key.slice(1)
 
     if (key[0] === '.') {
       ;[, ...key] = key.split('.')
     }
 
-    // Default to .innerText if selector and/or reverse but no key
+    // Default to .innerText if selector and/or descending but no key
     if (key === undefined || key === '') {
       key = ['innerText']
     }
@@ -42,7 +42,7 @@ const parseToRules = (value: string | null): Rule[] => {
     return {
       key,
       selector,
-      reverse,
+      descending,
     }
   })
 }
@@ -70,7 +70,7 @@ export class DsSorter extends LitElement {
       .map(
         (rule) =>
           `${rule.selector ? `{${rule.selector}}` : ''} ${
-            rule.reverse ? '>' : ''
+            rule.descending ? '>' : ''
           }${
             typeof rule.key === 'string' ? rule.key : '.' + rule.key.join('.')
           }`
@@ -96,9 +96,9 @@ export class DsSorter extends LitElement {
     | ((a: HTMLElement, b: HTMLElement) => number) = undefined
 
   /**
-   * Sort in descending order (else ascending is default)
+   * Sort in reverse order (rules that are ascending will be descending and vice versa)
    */
-  @property({ type: Boolean }) descending = false
+  @property({ type: Boolean }) reverse = false
 
   private get _slottedContent() {
     return Array.from(
@@ -145,7 +145,7 @@ export class DsSorter extends LitElement {
   }
 
   render() {
-    return html` <slot @slotchange=${this.sort}></slot> `
+    return html`<slot @slotchange=${this.sort}></slot>`
   }
 
   /**
@@ -175,7 +175,7 @@ export class DsSorter extends LitElement {
     }
 
     if (this.comparator) {
-      return this.comparator(a, b) * (this.descending ? -1 : 1)
+      return this.comparator(a, b) * (this.reverse ? -1 : 1)
     }
 
     const [rule, ...restRules] = rules
@@ -183,12 +183,12 @@ export class DsSorter extends LitElement {
     if (!rule) {
       return 0
     }
-    const { reverse = false } = rule
+    const { descending = false } = rule
 
     const firstVal = this.#getValue(a, rule)
     const secondVal = this.#getValue(b, rule)
 
-    const lesser = this.descending != reverse ? 1 : -1
+    const lesser = this.reverse !== descending ? 1 : -1
     const greater = -lesser
 
     if (
